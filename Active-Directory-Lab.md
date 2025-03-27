@@ -26,6 +26,7 @@ Windows Server 2019 will function as the Domain Controller (DC) with Active Dire
    - **Processors**: 1 or 2
    - **Hard Disk**: Create a virtual hard disk now > 20GB (25+ GB recommended)
 3. Click **Finish**.
+![Screenshot](images/Screenshot%202025-03-23%20at%2014.02.44.png)
 
 ### Configure Virtual Machine Settings:
 - Go to **Settings > General > Advanced**:
@@ -42,6 +43,7 @@ Windows Server 2019 will function as the Domain Controller (DC) with Active Dire
 3. Choose **Custom: Install Windows Only (Advanced)**.
 4. Wait for the installation to complete.
 5. Set an **Administrator password**.
+![OS, Desktop experience](images/OS,%20Desktop%20experience.png)
 
 ## Step 3 - Configure Domain Controller (DC)
 
@@ -65,7 +67,7 @@ Windows Server 2019 will function as the Domain Controller (DC) with Active Dire
    - **Settings > System > Rename this PC > DC** > Restart.
 
 ## Step 4 - Install and Configure Active Directory (AD DS)
-
+![Server Manager](images/Server%20Manager.png)
 1. Open **Server Manager** > **Add roles and features**.
 2. Select **Active Directory Domain Services (AD DS)** > **Add Features**.
 3. Complete installation and click **Promote this server to a domain controller**.
@@ -90,6 +92,7 @@ This will allow the client to automatically receive an IP address from the Domai
 6. Wait for the installation to complete, then click **Close**.
 
 ### Configure DHCP Server:
+![Notification Button](images/notification%20button%20.png)
 1. In **Server Manager**, click the **Notification Bell** (top-right) > **Complete DHCP Configuration**.
 2. Click **Next > Use AD Credentials** > **Commit** > **Close**.
 
@@ -106,6 +109,7 @@ This will allow the client to automatically receive an IP address from the Domai
    - Click **Add** > **Next**.
 4. **DNS Settings**: Ensure 172.16.0.1 is listed as the DNS Server > **Next**.
 5. **Activate Scope**: Select **Yes, activate now** > **Next > Finish**.
+![DHCP](images/DHCP.png)
 
 ### Authorize DHCP Server:
 1. In **DHCP Console**, right-click **dc.mydomain.com** > **Authorize**.
@@ -119,8 +123,9 @@ This will allow the client to automatically receive an IP address from the Domai
 2. Select **Remote Access > Routing** > **Install**.
 3. Open **Routing and Remote Access** (Tools > Routing).
 4. Right-click **DC (local)** > **Configure & Enable**.
-5. Select **Network Address Translation (NAT)** > **Next**.
+5. Select **Remote Access** > **Next**.
 6. Select **INTERNET interface** > **Finish**.
+![Remote Access](images/remote%20acces.png)
 
 ## Step 7 - Create an Admin Account in AD
 
