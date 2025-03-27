@@ -29,7 +29,7 @@ This repository contains a step-by-step guide for setting up a virtualized Windo
 
 ## 📄 Documentation
 
-Refer to `Windows Server Lab.pdf` for detailed instructions on setting up the environment.
+Refer to `AD-Lab.pdf` for detailed instructions on setting up the environment.
 
 ## 🤝 Contributing
 
