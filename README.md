@@ -20,7 +20,7 @@ This repository contains a step-by-step guide for setting up a virtualized Windo
 ## 🚀 Setup Instructions
 
 1. Download and install Oracle VirtualBox and the Extension Pack.
-2. Follow the step-by-step guide in `Windows Server Lab.pdf` to:
+2. Follow the step-by-step guide in `Acitve-Directory-Lab.md` to:
    - Create and configure Virtual Machines.
    - Install and configure Windows Server 2019.
    - Set up networking and services.
