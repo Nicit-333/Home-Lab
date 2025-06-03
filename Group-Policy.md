@@ -1,113 +1,160 @@
 # Home Lab Part 2: Domain Login & Group Policy Management
 
-## 🛠️ Issue 1: Domain Login Failure on Client1
+![Group Policy Management](images/GroupPolicy-Management.jpg)
+
+## Introduction
+This guide continues our Active Directory lab setup, focusing on troubleshooting domain login issues and implementing Group Policy Objects (GPOs) for centralized management of our Windows 10 client (Client1).
+
+## Step 1 - Troubleshooting Domain Login Failure
 
 ### Problem Summary
-- **Client1** (Windows 10, domain-joined) failed to authenticate domain users
-- Client1 was missing from the **"Computers"** container in Active Directory (AD)
+- Client1 (Windows 10, domain-joined) failed to authenticate domain users
+- Client1 was missing from the "Computers" container in Active Directory
 
-### 🔍 Troubleshooting Steps
-1. Verified user account in AD → Credentials and domain format were correct
-2. Checked AD "Computers" container → Client1 was not listed, suggesting improper domain join
-3. On Client1 login screen:
+### Resolution Steps
+1. **Verified user account** in Active Directory:
+   - Confirmed credentials and domain format were correct
+2. **Checked AD "Computers" container**:
+   - Client1 was not listed, indicating improper domain join
+3. **On Client1 login screen**:
    - Selected "Other user" → Domain name appeared correctly
-   - Logged in via local administrator account for access
+   - Logged in using local administrator account
 
-### 🔧 Resolution
-1. Disjoined Client1 from the domain:
+### Solution Implementation
+1. **Disjoined Client1 from domain**:
    - Settings > System > About > Rename this PC (advanced)
-   - Changed to workgroup, restarted
-2. Rejoined Client1 to the domain:
+   - Changed to workgroup and restarted
+2. **Rejoined Client1 to domain**:
    - Repeated steps, entered domain: mydomain.com
-   - Provided domain admin credentials, restarted
-3. Confirmed in AD: Client1 now appeared under "Computers"
-4. Tested domain login → Success
+   - Provided domain admin credentials when prompted
+   - Restarted machine
+3. **Verification**:
+   - Confirmed Client1 now appeared in AD "Computers" container
+   - Successfully logged in with domain user account
 
-### ✅ Root Cause
-- Likely an incomplete/corrupted domain join or broken secure channel between Client1 and the DC
+### Root Cause Analysis
+- Likely causes:
+  - Incomplete/corrupted initial domain join
+  - Broken secure channel between Client1 and DC
 
----
+![AD Computers Container](images/AD-Computers-Container.png)
 
-## 🛠️ Group Policy Deployment
+## Step 2 - Group Policy Management Setup
 
-### Step 1: Setting Up Group Policy Management (GPMC)
-- Verified GPMC installed via:
-  - Server Manager > Add Roles and Features > Features > Group Policy Management
+### Install Group Policy Management
+1. Open **Server Manager**
+2. Go to **Manage > Add Roles and Features**
+3. Navigate to **Features > Group Policy Management**
+4. Click **Install**
 
-### Creating an Organizational Unit (OU)
-- Opened GPMC, right-clicked domain → New OU → Named "TestComputers"
-- Moved Client1 from AD "Computers" to "TestComputers" OU
+### Create Organizational Unit (OU)
+1. Open **Group Policy Management Console**
+2. Right-click domain → **New Organizational Unit**
+3. Name: **TestComputers**
+4. Moved Client1 from default "Computers" container to new OU
 
----
+![GPMC Console](images/GPMC-Console.png)
 
-### Step 2: Deploying Wallpaper via GPO
+## Step 3 - Implement Desktop Wallpaper Policy
 
-#### Steps:
-1. Created shared folder:
-   - Path: `C:\Wallpapers` → Saved wallpaper image (`ilovehousemusic.jpg`)
-2. Shared folder permissions:
-   - Advanced Sharing > Share name: Wallpapers
-   - Removed "Everyone", added Domain Computers (Read access)
+### Shared Folder Setup
+1. Created folder: `C:\Wallpapers`
+2. Added wallpaper image: `ilovehousemusic.jpg`
+3. Configured sharing:
+   - Share name: Wallpapers
+   - Permissions:
+     - Removed "Everyone"
+     - Added Domain Computers (Read access)
    - UNC Path: `\\DC\Wallpapers\ilovehousemusic.jpg`
-   - Issue: Client1 couldn't access → Fixed by adding Authenticated Users to permissions
-3. Created GPO:
-   - OU: TestComputers → New GPO → Named "Set Desktop Wallpaper"
-   - Configured:
-     - User Configuration > Policies > Admin Templates > Desktop > Desktop Wallpaper
-     - Enabled, set UNC path, wallpaper style: Fill
-4. Applied GPO:
-   - Ran `gpupdate /force` on Client1 → No effect
-   - Fix: Enabled Loopback Processing (Merge mode) under:
-     - Computer Configuration > Policies > Admin Templates > System > Group Policy
-   - Result: Wallpaper applied after reboot
 
----
+### GPO Creation
+1. In GPMC, right-click **TestComputers OU** → **Create a GPO**
+2. Named: **Set Desktop Wallpaper**
+3. Configured:
+   - User Configuration > Policies > Admin Templates > Desktop > Desktop Wallpaper
+   - Enabled policy
+   - Set wallpaper path to UNC
+   - Style: Fill
 
-### Step 3: Disabling USB Storage (Allow Other HID Devices)
-- **GPO Name**: "Disable USB Storage" (Linked to TestComputers OU)
-- **Configured**:
-  - Computer Configuration > Policies > Admin Templates > System > Removable Storage Access
-  - Enabled:
-    - Deny read access
-    - Deny write access
-- **Tested**:
-  - USB drives blocked; mice/keyboards (HID class) worked
+### Troubleshooting
+- Initial failure due to permissions → Added Authenticated Users
+- Policy not applying → Enabled Loopback Processing (Merge mode)
+- Final verification: Wallpaper applied after `gpupdate /force` and reboot
 
-### Enforcing Password Policies
-- **Note**: Password policies are domain-wide (set in Default Domain Policy)
-- **Steps**:
-  - Edited Default Domain Policy → Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies > Password Policy
+## Step 4 - Implement USB Restriction Policy
 
----
+### GPO Configuration
+1. Created new GPO named **Disable USB Storage**
+2. Configured:
+   - Computer Configuration > Policies > Admin Templates > System > Removable Storage Access
+   - Enabled:
+     - Deny read access
+     - Deny write access
 
-## 🛠️ Step 4: Deploying Chrome via GPO
+### Testing
+- Confirmed:
+  - USB storage devices blocked
+  - HID devices (mice/keyboards) still functional
 
-### Steps:
-1. Downloaded Chrome MSI:
-   - From: [Chrome Enterprise Download](https://chromeenterprise.google/browser/download/) (64-bit MSI)
-   - Issue: Page wouldn't load → Fixed by adding 8.8.8.8 as alternate DNS
+![USB Policy](images/USB-Policy.png)
+
+## Step 5 - Deploy Chrome via GPO
+
+### Preparation
+1. Downloaded Chrome MSI from [Chrome Enterprise](https://chromeenterprise.google/browser/download/)
+   - Fixed DNS issue by adding 8.8.8.8 as alternate DNS
 2. Created shared folder:
    - Path: `C:\Software\Chrome`
    - Shared as `\\DC\Software` with Read access for:
      - Domain Computers
      - Authenticated Users
-3. Created GPO:
-   - OU: TestComputers → New GPO → Named "Deploy Chrome"
-   - Configured:
-     - Computer Configuration > Policies > Software Settings > Software Installation
-     - Added package via UNC Path: `\\DC\Software\Chrome\GoogleChromeStandaloneEnterprise64.msi`
-4. Troubleshooting:
-   - Issue 1: Client1 couldn't access UNC → Fixed security permissions (added Authenticated Users)
-   - Issue 2: Wrong UNC path in GPO → Recreated package with correct path
-5. Applied GPO:
-   - Ran `gpupdate /force` + reboot → Chrome installed successfully
 
----
+### GPO Implementation
+1. Created new GPO named **Deploy Chrome**
+2. Configured:
+   - Computer Configuration > Policies > Software Settings > Software Installation
+   - Added package: `\\DC\Software\Chrome\GoogleChromeStandaloneEnterprise64.msi`
 
-### ✅ Key Takeaways
-- **Domain join issues** → Rejoin domain + verify AD objects
-- **GPO deployment** requires:
-  - Correct permissions (Domain Computers/Authenticated Users)
-  - Accurate UNC paths
-  - Loopback Processing for user policies on computers
-- **Software deployment** needs shared folder + MSI installer
+### Troubleshooting
+1. Initial permission issues → Verified security settings
+2. UNC path error → Recreated package with correct path
+3. Final verification: Chrome installed after policy refresh and reboot
+
+## Step 6 - Password Policy Configuration
+
+### Implementation
+1. Edited **Default Domain Policy**
+2. Navigated to:
+   - Computer Configuration > Policies > Windows Settings > Security Settings > Account Policies > Password Policy
+3. Configured organization's required password settings
+
+## Troubleshooting
+
+### Common Issues
+- **GPOs not applying?**
+  - Check Loopback Processing setting
+  - Verify correct OU placement
+  - Run `gpupdate /force` and reboot
+- **Permission errors?**
+  - Confirm Domain Computers and Authenticated Users have proper access
+  - Check both Share and Security permissions
+- **Software not installing?**
+  - Validate UNC path accessibility
+  - Check Event Viewer for detailed errors
+
+## Conclusion
+This lab extension provides hands-on experience with:
+- Domain join troubleshooting
+- Group Policy creation and management
+- Software deployment via GPO
+- Enterprise device control policies
+
+## Next Steps
+- Explore advanced GPO settings
+- Implement login scripts
+- Configure folder redirection
+
+## Credits
+Guide By **Nicolas Cordischi**
+
+Building on the foundation from Part 1 of our Active Directory Lab series.
