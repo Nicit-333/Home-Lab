@@ -8,9 +8,6 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
 
 ## Step 1 - Troubleshooting Domain Login Failure
 
-![Missing Computer Object](images/New%20OU.png)
-*Client1 missing from default Computers container in AD*
-
 ### Problem Summary
 - Client1 (Windows 10, domain-joined) failed to authenticate domain users
 - Client1 was missing from the "Computers" container in Active Directory
