@@ -1,11 +1,15 @@
 # Home Lab Part 2: Domain Login & Group Policy Management
 
-![Group Policy Management](images/GroupPolicy-Management.jpg)
+![Group Policy Management](images/Group_Policy.png)
+*Group Policy Management Console overview*
 
 ## Introduction
 This guide continues our Active Directory lab setup, focusing on troubleshooting domain login issues and implementing Group Policy Objects (GPOs) for centralized management of our Windows 10 client (Client1).
 
 ## Step 1 - Troubleshooting Domain Login Failure
+
+![Missing Computer Object](images/New%20OU.png)
+*Client1 missing from default Computers container in AD*
 
 ### Problem Summary
 - Client1 (Windows 10, domain-joined) failed to authenticate domain users
@@ -37,9 +41,10 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
   - Incomplete/corrupted initial domain join
   - Broken secure channel between Client1 and DC
 
-![AD Computers Container](images/AD-Computers-Container.png)
-
 ## Step 2 - Group Policy Management Setup
+
+![Organizational Unit Creation](images/New%20OU.png)
+*Creating the TestComputers OU in GPMC*
 
 ### Install Group Policy Management
 1. Open **Server Manager**
@@ -53,9 +58,11 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
 3. Name: **TestComputers**
 4. Moved Client1 from default "Computers" container to new OU
 
-![GPMC Console](images/GPMC-Console.png)
 
 ## Step 3 - Implement Desktop Wallpaper Policy
+
+![Wallpaper GPO Configuration](images/GPO-wallpaper.png)
+*Configuring desktop wallpaper policy settings*
 
 ### Shared Folder Setup
 1. Created folder: `C:\Wallpapers`
@@ -81,6 +88,9 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
 - Policy not applying → Enabled Loopback Processing (Merge mode)
 - Final verification: Wallpaper applied after `gpupdate /force` and reboot
 
+![Shared Folder Permissions](images/Group%20Policy%20permissio0n%20-shared%20folder%20software.png)
+*Setting proper permissions for the Wallpapers shared folder*
+
 ## Step 4 - Implement USB Restriction Policy
 
 ### GPO Configuration
@@ -96,7 +106,8 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
   - USB storage devices blocked
   - HID devices (mice/keyboards) still functional
 
-![USB Policy](images/USB-Policy.png)
+![USB Access Policy](images/GPO-%20update.png)
+*Configuring removable storage access restrictions*
 
 ## Step 5 - Deploy Chrome via GPO
 
@@ -120,6 +131,9 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
 2. UNC path error → Recreated package with correct path
 3. Final verification: Chrome installed after policy refresh and reboot
 
+![Software Deployment Setup](images/Shared%20Folder.png)
+*Shared folder configuration for Chrome MSI deployment*
+
 ## Step 6 - Password Policy Configuration
 
 ### Implementation
@@ -141,6 +155,9 @@ This guide continues our Active Directory lab setup, focusing on troubleshooting
 - **Software not installing?**
   - Validate UNC path accessibility
   - Check Event Viewer for detailed errors
+
+![Domain Password Policies](images/Password%20policies.png)
+*Configuring password policies in Default Domain Policy*
 
 ## Conclusion
 This lab extension provides hands-on experience with:
