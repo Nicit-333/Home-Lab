@@ -30,11 +30,10 @@ This repository contains a step-by-step guide for setting up a virtualized Windo
 ## 📄 Documentation
 
 Refer to:
-Step 1:[Active Directory Lab Documentation](Active-Directory-Lab.md) 
-Step 2:[Group Policy Implementation and Troubleshooting](Group-Policy.md)
+-Step 1:[Active Directory Lab Documentation](Active-Directory-Lab.md) 
+-Step 2:[Group Policy Implementation and Troubleshooting](Group-Policy.md)
 
 for detailed instructions on setting up the environment.
-
 
 ## 🤝 Contributing
 
